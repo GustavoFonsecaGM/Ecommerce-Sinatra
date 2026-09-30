@@ -1,0 +1,25 @@
+<h1><%= h(@produto.nome) %></h1>
+
+<p><%= h(@produto.descricao) %></p>
+
+<ul>
+  <li>Preço: <strong><%= moeda(@produto.preco) %></strong></li>
+  <li>Estoque: <%= @produto.estoque %></li>
+  <li>Vendedor: <%= h(@produto.vendedor.nome) %></li>
+</ul>
+
+<% if logado? && @produto.vendedor_id == usuario_atual.id %>
+  <p><em>Este produto é seu.</em> <a href="/produtos/<%= @produto.id %>/editar">Editar</a></p>
+<% elsif @produto.estoque.zero? %>
+  <p><em>Produto sem estoque no momento.</em></p>
+<% else %>
+  <form action="/carrinho/itens" method="post">
+    <input type="hidden" name="produto_id" value="<%= @produto.id %>">
+    <label for="quantidade">Quantidade</label>
+    <input id="quantidade" name="quantidade" type="number" step="1" min="1"
+           max="<%= @produto.estoque %>" value="1" required>
+    <p><button type="submit">Adicionar ao carrinho</button></p>
+  </form>
+<% end %>
+
+<p><a href="/produtos">Voltar para a lista</a></p>

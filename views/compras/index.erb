@@ -1,0 +1,31 @@
+<h1>Minhas compras</h1>
+
+<% if @compras.empty? %>
+  <p>Você ainda não fez nenhuma compra.</p>
+  <p><a href="/produtos">Ver produtos</a></p>
+<% else %>
+  <% @compras.each do |venda| %>
+    <h2>Compra #<%= venda.id %> &mdash; <%= venda.data.strftime('%d/%m/%Y') %></h2>
+    <p>
+      Vendedor: <%= h(venda.vendedor.nome) %><br>
+      Situação: <strong><%= h(venda.status) %></strong><br>
+      Total: <strong><%= moeda(venda.valor_total) %></strong>
+    </p>
+    <table>
+      <tr><th>Produto</th><th>Qtd</th><th>Preço praticado</th><th>Subtotal</th></tr>
+      <% venda.item_vendas.each do |item| %>
+        <tr>
+          <td><%= h(item.produto.nome) %></td>
+          <td><%= item.quantidade %></td>
+          <td><%= moeda(item.preco_unitario) %></td>
+          <td><%= moeda(item.preco_unitario * item.quantidade) %></td>
+        </tr>
+      <% end %>
+    </table>
+    <% if venda.status == 'pendente' %>
+      <form action="/compras/<%= venda.id %>/cancelar" method="post">
+        <p><button type="submit">Cancelar compra</button></p>
+      </form>
+    <% end %>
+  <% end %>
+<% end %>

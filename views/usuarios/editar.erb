@@ -1,0 +1,5 @@
+<h1>Editar perfil</h1>
+
+<%= erb :'usuarios/_form', layout: false, locals: {
+      acao: '/perfil', rotulo_senha: 'Nova senha (deixe em branco para manter a atual)',
+      senha_obrigatoria: false, rotulo_botao: 'Salvar' } %>

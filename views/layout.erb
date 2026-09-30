@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>E-commerce</title>
+  <style>
+    /* ------------------------------------------------------------------
+       Paleta de caderneta de comerciante: verde-garrafa para o que entra
+       (sucesso, totais, ações), vermelho-sangue para o que sai (erro,
+       exclusão, cancelamento). É a mesma dupla de cores que um livro-caixa
+       usa para crédito e débito — aqui ela vale para a tela inteira.
+       ------------------------------------------------------------------ */
+    :root {
+      --papel:       #FAFAF8;
+      --fundo:       #EEEFEB;
+      --tinta:       #16181D;
+      --tinta-fraca: #5C626E;
+      --linha:       #E1E3DE;
+      --credito:     #1B4D3E;
+      --credito-luz: #E7EFEB;
+      --debito:      #8B1A1A;
+      --debito-luz:  #F8EBEB;
+      --raio: 6px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--fundo);
+      color: var(--tinta);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+                   "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ---------------------------------------------------------- cabeçalho */
+    header {
+      background: var(--tinta);
+      color: var(--papel);
+      padding: 14px 20px;
+      border-bottom: 3px solid var(--credito);
+    }
+    header > strong {
+      font-size: 1.05rem;
+      letter-spacing: -.01em;
+    }
+    header nav {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 18px;
+      margin-top: 8px;
+    }
+    header nav a {
+      color: #C9CDD4;
+      text-decoration: none;
+      font-size: .92rem;
+      padding: 2px 0;
+      border-bottom: 2px solid transparent;
+    }
+    header nav a:hover { color: #fff; border-bottom-color: var(--credito); }
+    /* O "Olá, fulano" vem depois do botão Sair na marcação; o `order` põe
+       cada um no lugar que o olho espera, sem mexer no HTML. */
+    header nav span { order: 1; margin-left: auto; font-size: .88rem; color: #9BA2AD; }
+    header nav form.inline { order: 2; }
+
+    /* ----------------------------------------------------- corpo e rodapé */
+    main {
+      max-width: 900px;
+      margin: 28px auto;
+      padding: 32px;
+      background: var(--papel);
+      border: 1px solid var(--linha);
+      border-radius: 10px;
+    }
+    footer {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 8px 20px 32px;
+      color: var(--tinta-fraca);
+      font-size: .8rem;
+      text-align: center;
+    }
+
+    /* ------------------------------------------------------- tipografia */
+    main h1 {
+      font-size: 1.7rem;
+      font-weight: 700;
+      letter-spacing: -.022em;
+      margin: 0 0 22px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--tinta);
+    }
+    main h2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -.01em;
+      margin: 30px 0 10px;
+      padding-top: 22px;
+      border-top: 1px solid var(--linha);
+    }
+    main h2:first-of-type { border-top: none; padding-top: 0; margin-top: 0; }
+    main a {
+      color: var(--credito);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-thickness: 1px;
+    }
+    main a:hover { text-decoration-thickness: 2px; }
+    main em { color: var(--tinta-fraca); font-size: .92rem; }
+
+    /* Nos blocos de compra/venda o primeiro <strong> do parágrafo é a
+       situação e o último é o total — daí o :first-of-type/:last-of-type.
+       A situação é o eixo do sistema, então é ela que ganha destaque. */
+    main h2 + p strong:first-of-type {
+      display: inline-block;
+      background: var(--tinta);
+      color: var(--papel);
+      padding: 2px 11px;
+      border-radius: 999px;
+      font-size: .74rem;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+    }
+    main h2 + p strong:last-of-type {
+      color: var(--credito);
+      font-size: 1.12rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    main ul { list-style: none; padding: 0; margin: 20px 0; }
+    main li { padding: 9px 2px; border-bottom: 1px solid var(--linha); }
+    main li:first-child { border-top: 1px solid var(--linha); }
+
+    /* ----------------------------------------------------------- tabelas */
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 18px 0;
+      font-variant-numeric: tabular-nums;  /* dinheiro alinha coluna a coluna */
+    }
+    th, td {
+      border: none;
+      border-bottom: 1px solid var(--linha);
+      padding: 11px 12px 11px 0;
+      text-align: left;
+      vertical-align: middle;
+    }
+    tr:first-child th {
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--tinta-fraca);
+      border-bottom: 2px solid var(--tinta);
+      padding-bottom: 8px;
+    }
+    tr:last-child th {
+      font-size: 1.02rem;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-transform: none;
+      color: var(--credito);
+      border-bottom: none;
+      border-top: 2px solid var(--tinta);
+      padding-top: 12px;
+    }
+    tbody tr:hover td { background: var(--credito-luz); }
+
+    /* ---------------------------------------------------------- formulários */
+    label {
+      display: block;
+      margin: 16px 0 5px;
+      font-size: .74rem;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--tinta-fraca);
+    }
+    input, textarea {
+      width: 100%;
+      max-width: 26rem;
+      padding: 9px 11px;
+      border: 1px solid #D3D6D1;
+      border-radius: var(--raio);
+      background: #fff;
+      color: var(--tinta);
+      font: inherit;
+    }
+    textarea { resize: vertical; }
+    input[type="number"] { max-width: 11rem; }
+    input#q { max-width: 24rem; }
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--credito);
+      box-shadow: 0 0 0 3px var(--credito-luz);
+    }
+
+    /* -------------------------------------------------------------- botões */
+    button {
+      font: inherit;
+      font-weight: 600;
+      background: var(--credito);
+      color: #fff;
+      border: 1px solid var(--credito);
+      border-radius: var(--raio);
+      padding: 9px 18px;
+      cursor: pointer;
+      transition: background .15s ease;
+    }
+    button:hover { background: #143C31; }
+    button:focus-visible { outline: 2px solid var(--tinta); outline-offset: 2px; }
+
+    /* Botões de linha de tabela: secundários, não competem com o conteúdo. */
+    form.inline { display: inline; }
+    form.inline button {
+      background: transparent;
+      color: var(--tinta-fraca);
+      border-color: #D3D6D1;
+      padding: 4px 11px;
+      font-size: .84rem;
+      font-weight: 500;
+    }
+    form.inline button:hover { background: #fff; color: var(--tinta); }
+
+    header nav form.inline button {
+      background: transparent;
+      color: #C9CDD4;
+      border-color: #40454E;
+      padding: 3px 11px;
+      font-size: .84rem;
+    }
+    header nav form.inline button:hover { background: #262A31; color: #fff; }
+
+    /* O que tira do estoque, do carrinho ou da venda usa a cor de débito.
+       O seletor lê a própria rota do form — o verbo da URL é a semântica. */
+    form[action$="/excluir"] button,
+    form[action$="/remover"] button,
+    form[action$="/cancelar"] button {
+      background: transparent;
+      color: var(--debito);
+      border-color: #E0BFBF;
+      font-weight: 600;
+    }
+    form[action$="/excluir"] button:hover,
+    form[action$="/remover"] button:hover,
+    form[action$="/cancelar"] button:hover {
+      background: var(--debito-luz);
+      color: var(--debito);
+    }
+
+    form[action="/carrinho/finalizar"] button { font-size: 1.02rem; padding: 12px 24px; }
+
+    /* ---------------------------------------------- mensagens de feedback */
+    .flash {
+      padding: 12px 15px;
+      margin: 0 0 22px;
+      border: 1px solid;
+      border-left-width: 4px;
+      border-radius: var(--raio);
+      font-weight: 500;
+    }
+    .flash.sucesso { background: var(--credito-luz); border-color: var(--credito); color: #123B2F; }
+    .flash.erro    { background: var(--debito-luz);  border-color: var(--debito);  color: #6E1414; }
+
+    /* ---------------------------------------------------------- responsivo */
+    @media (max-width: 640px) {
+      main { margin: 0; padding: 20px; border-radius: 0; border-left: none; border-right: none; }
+      main h1 { font-size: 1.4rem; }
+      table { font-size: .88rem; }
+      th, td { padding: 9px 8px 9px 0; }
+      input, textarea { max-width: 100%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <strong>E-commerce</strong>
+    <nav>
+      <a href="/produtos">Produtos</a>
+      <a href="/carrinho">Carrinho</a>
+      <% if logado? %>
+        <a href="/meus-produtos">Meus produtos</a>
+        <a href="/minhas-compras">Minhas compras</a>
+        <a href="/vendas-recebidas">Vendas recebidas</a>
+        <a href="/perfil/editar">Perfil</a>
+        <form class="inline" action="/logout" method="post">
+          <button type="submit">Sair</button>
+        </form>
+        <span>Olá, <%= h(usuario_atual.nome) %></span>
+      <% else %>
+        <a href="/login">Entrar</a>
+        <a href="/cadastro">Cadastrar-se</a>
+      <% end %>
+    </nav>
+  </header>
+
+  <main>
+    <% if session[:sucesso] %>
+      <p class="flash sucesso"><%= h(session.delete(:sucesso)) %></p>
+    <% end %>
+    <% if session[:erro] %>
+      <p class="flash erro"><%= h(session.delete(:erro)) %></p>
+    <% end %>
+
+    <%= yield %>
+  </main>
+
+  <footer></footer>
+</body>
+</html>

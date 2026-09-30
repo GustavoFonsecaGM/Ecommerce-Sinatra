@@ -1,0 +1,12 @@
+# Gemfile.lock NÃO entra aqui: ele é entregável obrigatório.
+.bundle/
+vendor/bundle/
+node_modules/
+
+db/*.sqlite3
+db/*.sqlite3-journal
+
+spec/tmp/
+tmp/
+*.log
+.DS_Store

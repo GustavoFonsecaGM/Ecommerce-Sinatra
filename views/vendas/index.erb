@@ -1,0 +1,33 @@
+<h1>Vendas recebidas</h1>
+
+<% if @vendas.empty? %>
+  <p>Você ainda não recebeu nenhuma venda.</p>
+<% else %>
+  <% @vendas.each do |venda| %>
+    <h2>Venda #<%= venda.id %> &mdash; <%= venda.data.strftime('%d/%m/%Y') %></h2>
+    <p>
+      Comprador: <%= h(venda.comprador.nome) %><br>
+      Situação: <strong><%= h(venda.status) %></strong><br>
+      Total: <strong><%= moeda(venda.valor_total) %></strong>
+    </p>
+    <table>
+      <tr><th>Produto</th><th>Qtd</th><th>Preço praticado</th><th>Subtotal</th></tr>
+      <% venda.item_vendas.each do |item| %>
+        <tr>
+          <td><%= h(item.produto.nome) %></td>
+          <td><%= item.quantidade %></td>
+          <td><%= moeda(item.preco_unitario) %></td>
+          <td><%= moeda(item.preco_unitario * item.quantidade) %></td>
+        </tr>
+      <% end %>
+    </table>
+    <% proximo = Venda::FLUXO[venda.status] %>
+    <% if proximo %>
+      <form action="/vendas/<%= venda.id %>/avancar" method="post">
+        <p><button type="submit">Avançar situação para "<%= proximo %>"</button></p>
+      </form>
+    <% else %>
+      <p><em>Sem próxima situação a partir de "<%= h(venda.status) %>".</em></p>
+    <% end %>
+  <% end %>
+<% end %>

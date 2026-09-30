@@ -1,0 +1,28 @@
+<h1>Carrinho</h1>
+
+<% if @itens.empty? %>
+  <p>Seu carrinho está vazio.</p>
+  <p><a href="/produtos">Ver produtos</a></p>
+<% else %>
+  <table>
+    <tr><th>Produto</th><th>Preço unit.</th><th>Qtd</th><th>Subtotal</th><th></th></tr>
+    <% @itens.each do |item| %>
+      <tr>
+        <td><%= h(item[:produto].nome) %></td>
+        <td><%= moeda(item[:produto].preco) %></td>
+        <td><%= item[:quantidade] %></td>
+        <td><%= moeda(item[:subtotal]) %></td>
+        <td>
+          <form class="inline" action="/carrinho/itens/<%= item[:produto].id %>/remover" method="post">
+            <button type="submit">Remover</button>
+          </form>
+        </td>
+      </tr>
+    <% end %>
+    <tr><th colspan="3">Total</th><th colspan="2"><%= moeda(@total) %></th></tr>
+  </table>
+
+  <form action="/carrinho/finalizar" method="post">
+    <p><button type="submit">Finalizar compra</button></p>
+  </form>
+<% end %>

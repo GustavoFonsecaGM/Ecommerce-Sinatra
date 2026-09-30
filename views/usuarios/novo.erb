@@ -1,0 +1,7 @@
+<h1>Cadastrar-se</h1>
+
+<%= erb :'usuarios/_form', layout: false, locals: {
+      acao: '/usuarios', rotulo_senha: 'Senha',
+      senha_obrigatoria: true, rotulo_botao: 'Cadastrar' } %>
+
+<p>Já tem conta? <a href="/login">Entrar</a>.</p>

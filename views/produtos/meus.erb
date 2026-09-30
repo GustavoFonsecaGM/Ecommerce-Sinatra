@@ -1,0 +1,25 @@
+<h1>Meus produtos</h1>
+
+<p><a href="/produtos/novo">Cadastrar produto</a></p>
+
+<% if @produtos.empty? %>
+  <p>Você ainda não cadastrou nenhum produto.</p>
+<% else %>
+  <table>
+    <tr><th>Produto</th><th>Preço</th><th>Estoque</th><th>Ações</th></tr>
+    <% @produtos.each do |produto| %>
+      <tr>
+        <td><%= h(produto.nome) %></td>
+        <td><%= moeda(produto.preco) %></td>
+        <td><%= produto.estoque %></td>
+        <td>
+          <a href="/produtos/<%= produto.id %>">Ver</a>
+          <a href="/produtos/<%= produto.id %>/editar">Editar</a>
+          <form class="inline" action="/produtos/<%= produto.id %>/excluir" method="post">
+            <button type="submit">Excluir</button>
+          </form>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+<% end %>

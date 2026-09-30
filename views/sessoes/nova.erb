@@ -1,0 +1,13 @@
+<h1>Entrar</h1>
+
+<form action="/login" method="post">
+  <label for="email">E-mail</label>
+  <input id="email" name="email" type="email" value="<%= h(params[:email]) %>" required>
+
+  <label for="senha">Senha</label>
+  <input id="senha" name="senha" type="password" required>
+
+  <p><button type="submit">Entrar</button></p>
+</form>
+
+<p>Não tem conta? <a href="/cadastro">Cadastrar-se</a>.</p>

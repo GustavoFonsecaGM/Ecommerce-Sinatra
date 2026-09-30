@@ -1,0 +1,18 @@
+<form action="<%= acao %>" method="post">
+  <label for="nome">Nome</label>
+  <input id="nome" name="nome" value="<%= h(@usuario.nome) %>" required>
+
+  <label for="email">E-mail</label>
+  <input id="email" name="email" type="email" value="<%= h(@usuario.email) %>" required>
+
+  <label for="cpf">CPF</label>
+  <input id="cpf" name="cpf" value="<%= h(@usuario.cpf) %>" required>
+
+  <label for="telefone">Telefone (opcional)</label>
+  <input id="telefone" name="telefone" value="<%= h(@usuario.telefone) %>">
+
+  <label for="senha"><%= rotulo_senha %></label>
+  <input id="senha" name="senha" type="password" <%= 'required' if senha_obrigatoria %>>
+
+  <p><button type="submit"><%= rotulo_botao %></button></p>
+</form>

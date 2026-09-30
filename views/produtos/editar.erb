@@ -1,0 +1,6 @@
+<h1>Editar produto</h1>
+
+<%= erb :'produtos/_form', layout: false, locals: {
+      acao: "/produtos/#{@produto.id}", rotulo_botao: 'Salvar' } %>
+
+<p><a href="/meus-produtos">Voltar para meus produtos</a></p>
